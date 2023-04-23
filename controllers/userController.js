@@ -13,16 +13,14 @@ const getAllUser = async (req, res) => {
 
 const createUser = async (req, res) => {
 	try {
-		console.log(`user`, user);
-		const { name, lastName, email, zipCode, password } = req.body;
-		const User = new User (req.body);
+		const { name, lastName, email, password } = req.body;
 		await res.status(200).send({
 		    success : true,
 		    message : "The user has been created"
 		    // courses,
 		})
 
-		if (!name || !lastName || !email || !zipCode || !password) {
+		if (!name || !lastName || !email || !password) {
 			return res.status(400).send({
 				success: false,
 				message: "The Data is not found !",
@@ -79,7 +77,7 @@ const loginUser = async (req, res) => {
 			user.token = token;
 			return res.status(200).send({
 				success: true,
-				message: "The User has been found !",
+				message: "Success fully login !",
 				user,
 			});
 		}

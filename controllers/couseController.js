@@ -2,6 +2,7 @@ const Course = require("../models/courseModel");
 
 const getAllCourse = async (req, res) => {
 	let course = await Course.find({});
+	// console.log(`course`, course);
 	return res.status(200).send({
 		success: true,
 		course,
@@ -10,13 +11,15 @@ const getAllCourse = async (req, res) => {
 
 const createCourse = async (req, res) => {
 	try {
-		console.log(`courses`, course);
 		let course = new Course(req.body);
+		// console.log(`course`, course);
+		// const {title, description, maxStudent, cost} = req.body;
 		await course.save();
+		console.log(`course`, course);
 		return res.status(200).send({
 			success: true,
 			message: "The course has been successfully created.",
-			course,
+			Course,
 		});
 	} catch (error) {
 		res.status(500).send({
@@ -51,6 +54,7 @@ const oneCourse = async (req, res) => {
 
 const updateCourse = async (req, res) => {
 	const { id } = req.params.id;
+	console.log(`id`, id);
 	let course = await Course.findByIdAndUpdate(id, req.body);
 	res.status(200).send({
 		success: true,

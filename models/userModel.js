@@ -14,11 +14,6 @@ const userSchema= new mongoose.Schema({
         lowercase:true,
         unique:true
     },
-    zipCode:{
-        type:Number,
-        min:[1000,"ZipCode is too short"],
-        max: 99999
-    },
     password:{
         type:String, 
         required:true
@@ -34,5 +29,8 @@ const userSchema= new mongoose.Schema({
 }, {
     timestamps: true
     })
-const User= mongoose.model('User',userSchema);
-module.exports = User;
+
+    let User = module.exports = mongoose.model("users", userSchema);
+// const User= mongoose.model('User',userSchema);
+// module.exports = User;
+

@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const verifyToken = require("./middlewares/authRoute") 
 
 const userRouter = require("./routes/userRoute")
-const suscriberRouter = require("./routes/suscriberRoute")
+const subscriberRouter = require("./routes/subscriberRoute")
 const courseRouter = require("./routes/courseRoute")
 const express = require("express");
 
@@ -18,7 +18,7 @@ const port = process.env.PORT || API_PORT;
 
 // API ROUTES
 app.use("/api", userRouter)
-app.use("/api", suscriberRouter)
+app.use("/api", subscriberRouter)
 app.use("/api", courseRouter)
 
 app.listen(port, ()=>console.log('listening on port ' + port));
