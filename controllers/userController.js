@@ -35,9 +35,9 @@ const createUser = async (req, res) => {
 			password: hashedPassword,
 		});
 
-		const isSuscribe = await Subscriber.findOne({ email });
-		if (isSuscribe) {
-			user.subscribedAccount = isSuscribe._id;
+		const isSubscribe = await Subscriber.findOne({ email });
+		if (isSubscribe) {
+			user.subscribedAccount = isSubscribe._id;
 		}
 
 		const token = jwt.sign({ user_id: user.id, email }, process.env.TOKEN_KEY, {
@@ -61,32 +61,28 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
 	try {
 		const { email, password } = req.body;
-		if (!(email && password)) {
+		if (!(email && password)) 
 			return res.status(400).send({
 				success: false,
 				message: "All input are required !",
 			});
+		
+		const user = await User.findOne({ email : req.body.email });
+		if(! user) return res.status(200).json({message : "user does not exist " , success : false});
+		const isMatch = await bcrypt.compare(req.body.password, user.password);
+		if(!isMatch) return res.status(200).json({message : "password does not match", success : false})
+		else {
+			const token = jwt.sign({id: user._id, },process.env.JWT_SECRET,{ expiresIn: "2h" });
+			console.log(token);
+			return res.status(200).json({message: "login succesfull", success: true, data: token})
 		}
-		const user = await User.findOne({ email });
-		if (user && (await bcrypt.compare(password, user.password))) {
-			const token = jwt.sign(
-				{ user_id: user.id, email },
-				process.env.TOKEN_KEY,
-				{ expiresIn: "2h" }
-			);
-			user.token = token;
-			return res.status(200).send({
-				success: true,
-				message: "Success fully login !",
-				user,
+			} catch (error) {
+			res.status(500).send({
+				message : "error login !",
+				success: false,
+				error
 			});
 		}
-	} catch (error) {
-		res.status(500).send({
-			success: false,
-			message: error.message,
-		});
-	}
 };
 
 const oneUser = async ( req, res) => {

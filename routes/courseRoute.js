@@ -11,7 +11,7 @@ const courseRouter = require("express").Router();
 courseRouter.get("/courses", getAllCourse);
 courseRouter.post("/courses/create", createCourse);
 courseRouter.get("/courses/:id", oneCourse);	
-courseRouter.put("/courses/:id/update", updateCourse);
-courseRouter.delete("/courses/:id/delete", deleteCourse);
+courseRouter.put("/courses/update/:id", updateCourse);
+courseRouter.delete("/courses/delete/:id", deleteCourse);
 
 module.exports = courseRouter;

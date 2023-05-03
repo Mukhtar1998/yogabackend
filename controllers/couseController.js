@@ -12,10 +12,7 @@ const getAllCourse = async (req, res) => {
 const createCourse = async (req, res) => {
 	try {
 		let course = new Course(req.body);
-		// console.log(`course`, course);
-		// const {title, description, maxStudent, cost} = req.body;
 		await course.save();
-		console.log(`course`, course);
 		return res.status(200).send({
 			success: true,
 			message: "The course has been successfully created.",

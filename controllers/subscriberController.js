@@ -1,39 +1,40 @@
 const express = require("express");
 const jwt = require("jsonwebtoken")
 const Subscriber = require("../models/subscriberModel");
+const Course = require("../models/courseModel");
 
 
 const getAllSubscriber = async (req, res) => {
-	let subscriber = await Subscriber.find({}).populate("Course");
+	let subscriber = await Subscriber.find({}).populate({
+		path : "course",
+	});
 	console.log(`subscriber`, subscriber);
 	return res.status(200).send({
 		success: true,
 		subscriber,
-		courses,
 	
 	});
 };
 
 const createSubscriber = async (req, res) => {
 	try {
-		const { name, email } = req.body;
-		if (!name || !email ) {
-			return res.status(200).send({
-				success: false,
-				message: "The Data is not found !",
-				courses,
+		const { email ,course, day, time ,date} = req.body;
+		// if (!name || !email || !course) {
+		// 	return res.status(200).send({
+		// 		success: false,
+		// 		message: "The Data is not found !",
 
-			});
-		}
-		let subscriber = new Subscriber({ name, email });
+		// 	});
+		// }
+		let subscriber = new Subscriber({ email, course , day, time , date });
 		console.log(`subcsriber`, subscriber);
 		await subscriber.save();
-		const token = jwt.sign(
-			{ susbcriber_id: subscriber.id, email },
-			process.env.TOKEN_KEY,
-			{ expiresIn: "3h" }
-		);
-		user.token = token;
+		// const token = jwt.sign(
+		// 	{ susbcriber_id: subscriber.id, email },
+		// 	process.env.TOKEN_KEY,
+		// 	{ expiresIn: "3h" }
+		// );
+		// user.token = token;
 		return res.status(200).send({
 			success: true,
 			message: "The Subscriber has been created.",
@@ -50,11 +51,17 @@ const createSubscriber = async (req, res) => {
 const oneSubscriber = async (req, res) => {
 	try {
 		const { id } = req.params;
-		let subscriber = await Subscriber.findById(id).populate("Course");
+		let course = await Course.findById(id);
+		console.log("course",course);
+		let subscriber = await Subscriber.findById(id).populate({
+			path : "course",
+		});
+		console.log("subscriber",subscriber);
 		if (!subscriber) {
 			return res.status(404).send({
 				success: false,
 				message: "The Subscriber not found.",
+				course
 			});
 		}
 		return res.status(200).send({

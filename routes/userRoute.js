@@ -14,6 +14,6 @@ userRouter.post("/users/create", createUser);
 userRouter.post("/users/login", loginUser);
 userRouter.get("/users/:id", oneUser);
 userRouter.put("/users/update/:id", verifyToken, updateUser);
-userRouter.delete("/user/:id/delete", verifyToken, deleteUser);
+userRouter.delete("/users/delete/:id", verifyToken, deleteUser);
 
 module.exports = userRouter;

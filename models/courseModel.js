@@ -12,14 +12,20 @@ const courseSchema = new mongoose.Schema(
 		},
 		maxStudents: {
 			type: Number,
-			default: 0,
+			// default: 0,
 			min: [0, "Course ne peut avoir un nombre negatif d'etudiants"],
 		},
 		cost: {
 			type: Number,
-			default: 0,
+			// default: 0,
 			min: [0, "Le prix du Cours ne peut pas être négatif"],
 		},
+		courses: [
+			{
+				day : String,
+				time : Number,
+			}
+		]
 	},
 	{
 		timestamps: true,

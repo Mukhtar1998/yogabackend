@@ -21,4 +21,4 @@ app.use("/api", userRouter)
 app.use("/api", subscriberRouter)
 app.use("/api", courseRouter)
 
-app.listen(port, ()=>console.log('listening on port ' + port));
+app.listen(4002, ()=>console.log('listening on port ' + port));
