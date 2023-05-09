@@ -18,14 +18,6 @@ const userSchema= new mongoose.Schema({
         type:String, 
         required:true
     },
-    courses: [{
-        type:mongoose.Schema.Types.ObjectId, 
-        ref:"Course"
-    }],
-    subscribedAccount: {
-        type:mongoose.Schema.Types.ObjectId, 
-        ref:"Subscriber"
-    },  
 }, {
     timestamps: true
     })

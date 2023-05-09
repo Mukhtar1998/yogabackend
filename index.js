@@ -1,5 +1,7 @@
 require("dotenv").config();
 require("./config/database").connect();
+
+const cors = require('cors')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const verifyToken = require("./middlewares/authRoute") 
@@ -10,6 +12,7 @@ const courseRouter = require("./routes/courseRoute")
 const express = require("express");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
