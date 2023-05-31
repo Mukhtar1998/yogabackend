@@ -2,7 +2,6 @@ const Course = require("../models/courseModel");
 
 const getAllCourse = async (req, res) => {
 	let course = await Course.find({});
-	// console.log(`course`, course);
 	return res.status(200).send({
 		success: true,
 		course,
@@ -13,6 +12,9 @@ const createCourse = async (req, res) => {
 	try {
 		let course = new Course(req.body);
 		await course.save();
+		console.log('====================================');
+		console.log(course);
+		console.log('====================================');
 		return res.status(200).send({
 			success: true,
 			message: "The course has been successfully created.",

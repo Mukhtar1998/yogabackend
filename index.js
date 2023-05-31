@@ -19,6 +19,8 @@ app.use(express.urlencoded({extended: false}));
 const {API_PORT} =process.env;
 const port = process.env.PORT || API_PORT;
 
+app.use(verifyToken)
+
 // API ROUTES
 app.use("/api", userRouter)
 app.use("/api", subscriberRouter)

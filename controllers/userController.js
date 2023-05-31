@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Subscriber = require("../models/subscriberModel");
 
+
 const getAllUser = async (req, res) => {
   let user = await User.find({});
   return res.status(200).send({
@@ -12,40 +13,41 @@ const getAllUser = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-    const { name, lastName, email, password } = req.body;
-	console.log(req.body)
+  const { name, lastName, email, password } = req.body;
 
-    if (!name || !lastName || !email || !password) {
-      return res.status(400).send({
-        success: false,
-        message: "The Data is not found !",
+  if (!name || !lastName || !email || !password) {
+    return res.status(400).send({
+      success: false,
+      message: "The Data is not found !",
+    });
+  } else {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name,
+      lastName,
+      email,
+      password: hashedPassword,
+    });
+    // const token = jwt.sign({ user_id: user.id, email }, process.env.TOKEN_KEY, {
+    //   expiresIn: "3h",
+    // });
+    // user.token = token;
+    await user
+      .save()
+      .then(() => {
+        return res.status(200).send({
+          success: true,
+          message: "The User has been registered",
+          user,
+        });
+      })
+      .catch((reason) => {
+        res.status(500).send({
+          success: false,
+          message: reason.toString(),
+        });
       });
-    } else {
-		const hashedPassword = await bcrypt.hash(password, 10);
-		const user = await User.create({
-		  name,
-		  lastName,
-		  email,
-		  password: hashedPassword,
-		});
-	
-		const token = jwt.sign({ user_id: user.id, email }, process.env.TOKEN_KEY, {
-		  expiresIn: "3h",
-		});
-		user.token = token;
-		await user.save().then(() => {
-			return res.status(200).send({
-				success: true,
-				message: "The User has been registered",
-				user,
-			  });
-		}).catch(reason => {
-			res.status(500).send({
-				success: false,
-				message: reason.toString(),
-			  });
-		});
-	}
+  }
 };
 
 const loginUser = async (req, res) => {
@@ -56,8 +58,10 @@ const loginUser = async (req, res) => {
         success: false,
         message: "All input are required !",
       });
-
     const user = await User.findOne({ email: req.body.email });
+    console.log('====================================');
+    console.log("req.body",req.body);
+    console.log('====================================');
     if (!user)
       return res
         .status(200)
@@ -71,7 +75,7 @@ const loginUser = async (req, res) => {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "2h",
       });
-    //   console.log(token);
+      console.log("tokens" ,token);
       return res
         .status(200)
         .json({ message: "login succesfull", success: true, data: token });
@@ -108,9 +112,62 @@ const oneUser = async (req, res) => {
   }
 };
 
+const userProfile = async (req, res) => {
+  try {
+    const userProfile = jwt.decode(req.get("Authorization").split(" ")[1]);
+    let user = await User.findById(userProfile?.id);
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found !",
+      });
+    }
+    delete user.password; 
+    return res.status(200).send({
+      success: true,
+      message: "The User has been found",
+      user,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+const userCourses = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found !",
+      });
+    }
+    let subcriptions = await Subscriber.find({user : id})
+    return res.status(200).send({
+      success: true,
+      message: "The User has been found",
+      user,
+      subcriptions
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const updateUser = async (req, res) => {
   const id = req.params.id;
   const user = await User.findByIdAndUpdate(id, req.body);
+  // const token = jwt.sign({ user_id: user.id, email }, process.env.TOKEN_KEY, {
+  //   expiresIn: "3h",
+  // });
+  user.token = token;
   res.status(200).send({
     success: true,
     message: "User is modified",
@@ -139,6 +196,8 @@ module.exports = {
   createUser,
   loginUser,
   oneUser,
+  userCourses,
   updateUser,
   deleteUser,
+  userProfile,
 };

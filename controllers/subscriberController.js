@@ -18,15 +18,14 @@ const getAllSubscriber = async (req, res) => {
 
 const createSubscriber = async (req, res) => {
 	try {
-		const { email ,course, day, time ,date} = req.body;
-		// if (!name || !email || !course) {
-		// 	return res.status(200).send({
-		// 		success: false,
-		// 		message: "The Data is not found !",
-
-		// 	});
-		// }
-		let subscriber = new Subscriber({ email, course , day, time , date });
+		const { user ,course, date} = req.body;
+		if (!user || !course || !date) {
+			return res.status(200).send({
+				success: false,
+				message: "The Data is not found !",
+			});
+		}
+		let subscriber = new Subscriber({ user, course , date });
 		console.log(`subcsriber`, subscriber);
 		await subscriber.save();
 		// const token = jwt.sign(
