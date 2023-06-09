@@ -59,9 +59,6 @@ const loginUser = async (req, res) => {
         message: "All input are required !",
       });
     const user = await User.findOne({ email: req.body.email });
-    console.log('====================================');
-    console.log("req.body",req.body);
-    console.log('====================================');
     if (!user)
       return res
         .status(200)
@@ -73,9 +70,8 @@ const loginUser = async (req, res) => {
         .json({ message: "password does not match", success: false });
     else {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: "2h",
+        expiresIn: "12h",
       });
-      console.log("tokens" ,token);
       return res
         .status(200)
         .json({ message: "login succesfull", success: true, data: token });
@@ -112,10 +108,12 @@ const oneUser = async (req, res) => {
   }
 };
 
+// user profile route
 const userProfile = async (req, res) => {
   try {
     const userProfile = jwt.decode(req.get("Authorization").split(" ")[1]);
     let user = await User.findById(userProfile?.id);
+   
     if (!user) {
       return res.status(404).send({
         success: false,
@@ -123,6 +121,9 @@ const userProfile = async (req, res) => {
       });
     }
     delete user.password; 
+    console.log('====================================');
+    console.log("password",user.password);
+    console.log('====================================');
     return res.status(200).send({
       success: true,
       message: "The User has been found",
@@ -135,6 +136,8 @@ const userProfile = async (req, res) => {
     });
   }
 };
+
+// COURSE SUBSCRIPTION
 const userCourses = async (req, res) => {
   try {
     const { id } = req.params;
